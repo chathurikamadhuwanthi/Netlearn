@@ -48,7 +48,7 @@ run.py
 
 ## Demo
 
-Demo video: *(add your link here)*
+Demo video: https://lnkd.in/p/gCefHtU2
 
 ## Author
 
