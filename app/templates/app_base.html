@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}NetLearn{% endblock %}</title>
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='img/favicon.svg') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="app-body">
+
+    {# Notifications (toasts) #}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="toast-stack">
+            {% for category, message in messages %}
+            <div class="toast {{ category }}" role="status">
+                <span class="toast-icon">{% if category == 'success' %}✓{% elif category == 'error' %}!{% else %}i{% endif %}</span>
+                <span class="toast-msg">{{ message }}</span>
+                <button class="toast-close" type="button" aria-label="Close">×</button>
+                <span class="toast-bar"></span>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    {% endwith %}
+
+    <div class="app-shell">
+        <aside class="side" id="side">
+            <a class="side-brand" href="{{ url_for('main.home') }}" title="Go to the home page">{% include "_logo.html" %}</a>
+
+            <a class="side-user" href="{{ url_for('main.profile') }}" title="Edit your profile">
+                <span class="side-avatar">{{ g.user['name'][:1] | upper }}<i class="side-dot"></i></span>
+                <span class="side-user-text">
+                    <strong>{{ g.user['name'] }}</strong>
+                    <small>{{ g.user['email'] }}</small>
+                </span>
+                <svg class="side-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6 L15 12 L9 18"/></svg>
+            </a>
+
+            <nav class="side-nav">
+                <a class="side-link {{ 'active' if active == 'dashboard' }}" href="{{ url_for('main.dashboard') }}">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+                    Dashboard
+                </a>
+                <a class="side-link {{ 'active' if active == 'course' }}" href="{{ url_for('main.course') }}">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5 H10 C11.1 5 12 5.9 12 7 V20 C12 19 11.1 18 10 18 H3 Z"/><path d="M21 5 H14 C12.9 5 12 5.9 12 7 V20 C12 19 12.9 18 14 18 H21 Z"/></svg>
+                    Course
+                </a>
+
+                <p class="side-label">Tools</p>
+                <a class="side-link {{ 'active' if active == 'packet' }}" href="{{ url_for('tools.packet_walk') }}">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="2.5"/><circle cx="12" cy="5" r="2.5"/><circle cx="19" cy="12" r="2.5"/><circle cx="12" cy="19" r="2.5"/><path d="M7 10.5 L10.2 6.8 M13.8 6.8 L17 10.5 M17 13.5 L13.8 17.2 M10.2 17.2 L7 13.5"/></svg>
+                    Packet Walk
+                </a>
+                <a class="side-link {{ 'active' if active == 'subnet' }}" href="{{ url_for('tools.subnet') }}">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2.5"/><path d="M8 7 H16 M8.5 12 H9.5 M12 12 H13 M15 12 H16 M8.5 16 H9.5 M12 16 H13 M15 16 H16"/></svg>
+                    Subnet Calculator
+                </a>
+                                <details class="side-group" {{ 'open' if active in ('lab1', 'lab2', 'lab3') }}>
+                    <summary class="side-link">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M7 10 L10 12.5 L7 15 M12 15 H17"/></svg>
+                        Net Labs
+                        <svg class="side-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6 L15 12 L9 18"/></svg>
+                    </summary>
+                    <a class="side-sub {{ 'active' if active == 'lab1' }}" href="{{ url_for('tools.lab', lab_id=1) }}">Lab 1 · Static Routing</a>
+                    <a class="side-sub {{ 'active' if active == 'lab2' }}" href="{{ url_for('tools.lab', lab_id=2) }}">Lab 2 · VLANs &amp; Trunking</a>
+                    <a class="side-sub {{ 'active' if active == 'lab3' }}" href="{{ url_for('tools.lab', lab_id=3) }}">Lab 3 · OSPF Routing</a>
+                </details>
+
+                <p class="side-label">Account</p>
+                <a class="side-link {{ 'active' if active == 'certificate' }}" href="{{ url_for('certificate.view') }}">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="6"/><path d="M8.5 14 L7 21 L12 18.5 L17 21 L15.5 14"/></svg>
+                    Certificate
+                </a>
+                <a class="side-link {{ 'active' if active == 'profile' }}" href="{{ url_for('main.profile') }}">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21 C4 16 8 14 12 14 C16 14 20 16 20 21"/></svg>
+                    Profile
+                </a>
+            </nav>
+
+            <a class="side-link side-logout" href="{{ url_for('auth.logout') }}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4 H5 a2 2 0 0 0 -2 2 V18 a2 2 0 0 0 2 2 H9"/><path d="M16 8 L21 12 L16 16 M21 12 H9"/></svg>
+                Logout
+            </a>
+        </aside>
+
+        <div class="side-backdrop" id="side-backdrop"></div>
+
+        <div class="app-main">
+            <header class="app-top">
+                <button class="side-toggle" id="side-toggle" type="button" aria-label="Open menu">☰</button>
+                <div class="crumb"><span>NetLearn</span><i>›</i><b>{% block page_title %}{% endblock %}</b></div>
+                
+            </header>
+            <main class="app-content">
+                {% block content %}{% endblock %}
+            </main>
+        </div>
+    </div>
+
+    <script>
+    (function () {
+        
+
+        /* Mobile sidebar */
+        var side = document.getElementById('side');
+        var back = document.getElementById('side-backdrop');
+        var toggle = document.getElementById('side-toggle');
+        function setOpen(o) { side.classList.toggle('open', o); back.classList.toggle('show', o); }
+        toggle.addEventListener('click', function () { setOpen(!side.classList.contains('open')); });
+        back.addEventListener('click', function () { setOpen(false); });
+
+        /* Toasts close on click and disappear automatically */
+        document.querySelectorAll('.toast').forEach(function (el, i) {
+            function close() {
+                el.classList.add('hide');
+                setTimeout(function () { el.remove(); }, 350);
+            }
+            el.querySelector('.toast-close').addEventListener('click', close);
+            setTimeout(close, 4500 + i * 600);
+        });
+    })();
+    </script>
+</body>
+</html>

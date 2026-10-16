@@ -1,0 +1,57 @@
+{
+  "questions": [
+    {
+      "q": "Which binary value equals decimal 192?",
+      "options": ["10101000", "11000000", "11110000", "10000001"],
+      "answer": 1,
+      "explain": "128 + 64 = 192, so the binary value is 11000000."
+    },
+    {
+      "q": "How many usable host addresses does a /26 network have?",
+      "options": ["64", "62", "30", "126"],
+      "answer": 1,
+      "explain": "A /26 has 6 host bits. 2^6 − 2 = 62."
+    },
+    {
+      "q": "Which prefix matches the mask 255.255.255.240?",
+      "options": ["/26", "/27", "/28", "/29"],
+      "answer": 2,
+      "explain": "240 = 11110000, so there are 4 extra ones: 24 + 4 = /28."
+    },
+    {
+      "q": "What is the network address of 172.16.5.77/24?",
+      "options": ["172.16.0.0", "172.16.5.0", "172.16.5.64", "172.16.5.77"],
+      "answer": 1,
+      "explain": "With /24 the last octet is the host part, so it becomes 0: 172.16.5.0."
+    },
+    {
+      "q": "What is the broadcast address of 192.168.1.130/26?",
+      "options": ["192.168.1.128", "192.168.1.129", "192.168.1.190", "192.168.1.191"],
+      "answer": 3,
+      "explain": "The block size is 64. 130 falls in the block 128–191, and the broadcast address is the last address, 191."
+    },
+    {
+      "q": "A /24 network is split into 4 equal subnets. What is the new prefix?",
+      "options": ["/25", "/26", "/27", "/28"],
+      "answer": 1,
+      "explain": "4 subnets = 2², so 2 bits are borrowed: 24 + 2 = /26."
+    },
+    {
+      "q": "A PC shows the address 169.254.10.20. What does this usually mean?",
+      "options": [
+        "It is a private address given by the router",
+        "It is a loopback address",
+        "The PC could not get an address from a DHCP server",
+        "It is a multicast address"
+      ],
+      "answer": 2,
+      "explain": "When DHCP fails, the device gives itself an address from 169.254.0.0/16 (APIPA)."
+    },
+    {
+      "q": "Which subnet does 192.168.1.77/28 belong to?",
+      "options": ["192.168.1.64/28", "192.168.1.72/28", "192.168.1.76/28", "192.168.1.0/28"],
+      "answer": 0,
+      "explain": "The block size is 16. 77 falls in the block 64–79, so the network is 192.168.1.64/28."
+    }
+  ]
+}

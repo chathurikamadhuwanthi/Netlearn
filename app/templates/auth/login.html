@@ -1,0 +1,39 @@
+
+{% extends "auth/auth_base.html" %}
+{% block title %}Login – NetLearn{% endblock %}
+{% block side_title %}Welcome back{% endblock %}
+{% block side_text %}Log in to pick up right where you left off.{% endblock %}
+
+{% block form %}
+<h2>Login</h2>
+<p class="au-sub">Enter your details to continue learning.</p>
+
+<form method="post" class="au-form">
+    <label for="email">Email</label>
+    <div class="au-field">
+        <span class="au-ico">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3 8 L12 14 L21 8"/>
+            </svg>
+        </span>
+        <input type="email" id="email" name="email" placeholder="you@example.com"
+               value="{{ request.form.get('email', '') }}" autocomplete="email" required autofocus>
+    </div>
+
+    <label for="password">Password</label>
+    <div class="au-field">
+        <span class="au-ico">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="5" y="11" width="14" height="9" rx="2.5"/><path d="M8 11 V8 a4 4 0 0 1 8 0 V11"/>
+            </svg>
+        </span>
+        <input type="password" id="password" name="password" placeholder="Your password"
+               autocomplete="current-password" required>
+        <button type="button" class="au-eye" data-target="password">Show</button>
+    </div>
+
+    <button class="au-submit" type="submit">Login</button>
+</form>
+
+<p class="au-alt">New to NetLearn? <a href="{{ url_for('auth.register') }}">Create an account</a></p>
+{% endblock %}s

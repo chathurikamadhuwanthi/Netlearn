@@ -1,0 +1,77 @@
+{
+  "questions": [
+    {
+      "q": "What is the correct order of the DHCP process?",
+      "options": [
+        "Offer, Discover, Request, Acknowledge",
+        "Discover, Offer, Request, Acknowledge",
+        "Request, Offer, Discover, Acknowledge",
+        "Discover, Request, Offer, Acknowledge"
+      ],
+      "answer": 1,
+      "explain": "DORA: Discover, Offer, Request, Acknowledge."
+    },
+    {
+      "q": "A PC shows the address 169.254.12.7. What does this usually mean?",
+      "options": [
+        "It received an address from the DHCP server",
+        "It could not reach a DHCP server and gave itself an address",
+        "It is using a public address",
+        "It is using the loopback address"
+      ],
+      "answer": 1,
+      "explain": "169.254.0.0/16 is used for automatic private addressing (APIPA) when DHCP fails."
+    },
+    {
+      "q": "Which port does DNS normally use?",
+      "options": ["53", "67", "80", "443"],
+      "answer": 0,
+      "explain": "DNS uses port 53 (UDP normally, TCP for large answers and zone transfers). Port 67 is DHCP, 80 is HTTP and 443 is HTTPS."
+    },
+    {
+      "q": "Which DNS record maps a name to an IPv4 address?",
+      "options": ["MX", "CNAME", "A", "PTR"],
+      "answer": 2,
+      "explain": "An A record maps a name to an IPv4 address. AAAA is for IPv6, MX points to mail servers and PTR is for reverse lookups."
+    },
+    {
+      "q": "ping 8.8.8.8 works, but ping www.example.com fails. What is the most likely problem?",
+      "options": [
+        "The cable is unplugged",
+        "The default gateway is missing",
+        "Name resolution (DNS) is not working",
+        "The router is out of power"
+      ],
+      "answer": 2,
+      "explain": "The path to the Internet works, because pinging an IP address succeeds. Only the translation of the name into an address fails."
+    },
+    {
+      "q": "What does PAT allow?",
+      "options": [
+        "Many private hosts to share one public IP address by using different port numbers",
+        "A device to get an address automatically",
+        "Names to be translated into addresses",
+        "VLANs to talk to each other"
+      ],
+      "answer": 0,
+      "explain": "PAT (NAT overload) keeps a translation table with port numbers so that many inside devices can share a single public address."
+    },
+    {
+      "q": "Which keyword turns NAT into PAT in a Cisco ip nat inside source command?",
+      "options": ["static", "pool", "overload", "outside"],
+      "answer": 2,
+      "explain": "The overload keyword enables PAT."
+    },
+    {
+      "q": "What does the DHCP lease time define?",
+      "options": [
+        "How long a device may keep its address before it must renew it",
+        "How fast the DHCP server replies",
+        "The maximum number of devices on the network",
+        "How long a DNS answer stays in the cache"
+      ],
+      "answer": 0,
+      "explain": "A lease is a temporary loan of an address. The device renews it before it expires, otherwise the address returns to the pool."
+    }
+  ]
+}

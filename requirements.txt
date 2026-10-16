@@ -1,0 +1,4 @@
+Flask
+networkx
+markdown
+gunicorn

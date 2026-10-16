@@ -1,0 +1,126 @@
+{% extends "app_base.html" %}
+{% set active = 'certificate' %}
+{% block title %}Certificate – NetLearn{% endblock %}
+{% block page_title %}Certificate{% endblock %}
+
+{% block content %}
+
+<div class="pg-head">
+    <h1>Your certificate</h1>
+    <p>{% if cert %}Download it as a PDF and share the verification link.{% else %}Earn it by passing the quiz of every available module.{% endif %}</p>
+</div>
+
+{% if cert %}
+
+<section class="db-panel cert-panel no-print">
+    <div class="cert-panel-main">
+        <span class="db-label">Course completed</span>
+        <h2>Congratulations, {{ g.user['name'] }}</h2>
+        <p class="db-meta">You have completed every available module. Your certificate is ready.</p>
+        <dl class="cert-facts">
+            <div><dt>Certificate ID</dt><dd>{{ cert['code'] }}</dd></div>
+            <div><dt>Issued</dt><dd>{{ cert['issued_at'][:10] }}</dd></div>
+            <div><dt>Modules</dt><dd>{{ modules | length }}</dd></div>
+        </dl>
+    </div>
+    <div class="cert-panel-actions">
+        <button class="app-btn dark" type="button" onclick="window.print()">Download PDF</button>
+        <button class="app-btn outline-dark" type="button" id="copy-link" data-link="{{ verify_url }}">Copy verify link</button>
+    </div>
+</section>
+<p class="print-help no-print">
+    In the print window choose <strong>Save as PDF</strong>, <strong>Landscape</strong>,
+    <strong>Margins: None</strong> and tick <strong>Background graphics</strong>.
+</p>
+
+<div class="cert">
+    <div class="cert-inner">
+        <div class="cert-brand">{% include "_logo.html" %}</div>
+        <h1 class="cert-title">Certificate of Completion</h1>
+        <p class="cert-small">This is to certify that</p>
+        <p class="cert-name">{{ g.user['name'] }}</p>
+        <p class="cert-small">has successfully completed the NetLearn networking course,<br>
+            passing the module quizzes for:</p>
+
+        <ul class="cert-modules">
+            {% for m in modules %}<li>{{ m }}</li>{% endfor %}
+        </ul>
+
+        <div class="cert-footer">
+            <div class="cert-sign">
+                <div class="cert-line"></div>
+                <p>{{ config.CREATOR_NAME }}<br><span>Creator, NetLearn</span></p>
+            </div>
+            <div class="cert-meta">
+                <p>Issued: <strong>{{ cert['issued_at'][:10] }}</strong></p>
+                <p>Certificate ID: <strong>{{ cert['code'] }}</strong></p>
+                <p class="cert-verify">Verify: {{ verify_url }}</p>
+            </div>
+        </div>
+
+        <p class="cert-disclaimer">
+            Issued by the NetLearn learning platform. This is a course-completion certificate
+            and is not an accredited qualification.
+        </p>
+    </div>
+</div>
+
+<script>
+(function () {
+    var b = document.getElementById('copy-link');
+    if (!b) { return; }
+    b.addEventListener('click', function () {
+        var text = b.dataset.link;
+        function done() {
+            b.textContent = 'Copied!';
+            setTimeout(function () { b.textContent = 'Copy verify link'; }, 2000);
+        }
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(text).then(done);
+        } else {
+            var i = document.createElement('input');
+            i.value = text; document.body.appendChild(i); i.select();
+            document.execCommand('copy'); i.remove(); done();
+        }
+    });
+})();
+</script>
+
+{% else %}
+
+{% set avail = course | selectattr('available') | list | length %}
+{% set passed = course | selectattr('passed') | list | length %}
+{% set pct = ((passed / avail * 100) | round | int) if avail else 0 %}
+
+<section class="db-panel cert-lock">
+    <span class="db-label">Progress towards your certificate</span>
+    <div class="db-big">{{ passed }} of {{ avail }} <span>quizzes passed</span></div>
+    <progress class="app-prog thin" value="{{ pct }}" max="100"></progress>
+    <p class="db-meta" style="margin-bottom:16px;">Pass the remaining quizzes to unlock your certificate.</p>
+    <a class="app-btn dark" href="{{ url_for('learn.start') }}">Continue learning</a>
+</section>
+
+<div class="dash-h"><h2>What you need</h2></div>
+<section class="db-panel db-list">
+    {% for m in course %}
+    {% set st = 'completed' if m.passed else ('coming_soon' if not m.available else 'open') %}
+    <div class="db-row {{ st }}">
+        <span class="db-num">{% if m.passed %}✓{% else %}{{ loop.index }}{% endif %}</span>
+        <div class="db-row-main">
+            <b>{{ m.title }}</b>
+            <small>{{ m.level }}</small>
+        </div>
+        <div class="db-row-status">
+            <i class="st-dot {{ st }}"></i>
+            {% if m.passed %}Quiz passed
+            {% elif m.available %}Quiz not passed yet
+            {% else %}Coming soon · not required yet{% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</section>
+
+<p class="db-foot">Modules added later will not affect a certificate you have already earned.</p>
+
+{% endif %}
+{% endblock %}

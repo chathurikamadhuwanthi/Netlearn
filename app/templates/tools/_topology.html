@@ -1,0 +1,29 @@
+{% set p = result.path if (result is defined and result) else [] %}
+{% set d = result.dest if (result is defined and result) else '' %}
+<div class="topo-card">
+    <svg viewBox="0 0 760 280" xmlns="http://www.w3.org/2000/svg" role="img"
+         aria-label="Network diagram: three PCs, three routers and an ISP">
+        <g class="tlink" fill="none" stroke-width="2.5">
+            <path d="M110 68 V124"/><path d="M380 68 V124"/><path d="M650 68 V124"/>
+            <path d="M136 150 H354"/><path d="M406 150 H624"/><path d="M650 176 V212"/>
+        </g>
+        <g class="tlabel">
+            <text x="122" y="102">192.168.1.0/24</text>
+            <text x="392" y="102">192.168.2.0/24</text>
+            <text x="662" y="102">192.168.3.0/24</text>
+            <text x="245" y="140" text-anchor="middle">10.0.12.0/30</text>
+            <text x="515" y="140" text-anchor="middle">10.0.23.0/30</text>
+            <text x="662" y="198">203.0.113.0/30</text>
+        </g>
+
+        <g class="tnode {{ 'on' if 'PC-A' in p }}" transform="translate(110 50)"><rect x="-34" y="-18" width="68" height="36" rx="8"/><text y="5">PC-A</text></g>
+        <g class="tnode {{ 'on' if ('PC-B' in p or d == '192.168.2.10') }}" transform="translate(380 50)"><rect x="-34" y="-18" width="68" height="36" rx="8"/><text y="5">PC-B</text></g>
+        <g class="tnode {{ 'on' if ('PC-C' in p or d == '192.168.3.10') }}" transform="translate(650 50)"><rect x="-34" y="-18" width="68" height="36" rx="8"/><text y="5">PC-C</text></g>
+
+        <g class="tnode {{ 'on' if 'R1' in p }}" transform="translate(110 150)"><circle r="26"/><text y="5">R1</text></g>
+        <g class="tnode {{ 'on' if 'R2' in p }}" transform="translate(380 150)"><circle r="26"/><text y="5">R2</text></g>
+        <g class="tnode {{ 'on' if 'R3' in p }}" transform="translate(650 150)"><circle r="26"/><text y="5">R3</text></g>
+
+        <g class="tnode {{ 'on' if 'ISP (Internet)' in p }}" transform="translate(650 236)"><rect x="-46" y="-18" width="92" height="36" rx="18"/><text y="5">ISP</text></g>
+    </svg>
+</div>

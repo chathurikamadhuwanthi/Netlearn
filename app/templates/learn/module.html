@@ -1,0 +1,63 @@
+{% extends "app_base.html" %}
+{% set active = 'course' %}
+{% block title %}{{ module.title }} – NetLearn{% endblock %}
+{% block page_title %}Module {{ module.number }}{% endblock %}
+
+{% block content %}
+
+<div class="pg-head">
+    <span class="db-label">Module {{ module.number }} · {{ module.level }}</span>
+    <h1>{{ module.title }}</h1>
+    <p>{{ module.desc }}</p>
+</div>
+
+<div class="mo-layout">
+    <section class="db-panel mo-main">
+        <h3>Your progress</h3>
+        <progress class="app-prog thin" value="{{ module.pct }}" max="100"></progress>
+        <p class="db-meta" style="margin:6px 0 18px;">
+            {{ module.lessons | selectattr('done') | list | length }} of {{ module.lessons | length }} lessons complete
+            {% if module.best_score is not none %} · Quiz best {{ module.best_score }}%{% endif %}
+        </p>
+
+        <h3>Lessons</h3>
+        <ul class="cr-lessons mo-lessons">
+            {% for l in module.lessons %}
+            <li class="{{ 'done' if l.done else ('open' if l.unlocked else 'locked') }}">
+                <span class="cr-mark">{% if l.done %}✓{% else %}{{ loop.index }}{% endif %}</span>
+                {% if l.unlocked %}
+                    <a href="{{ url_for('learn.lesson', module_id=module.id, lesson_id=l.id) }}">{{ l.title }}</a>
+                {% else %}
+                    <span>{{ l.title }}</span>
+                {% endif %}
+            </li>
+            {% endfor %}
+            <li class="{{ 'done' if module.passed else ('open' if module.quiz_unlocked else 'locked') }}">
+                <span class="cr-mark">{% if module.passed %}✓{% else %}Q{% endif %}</span>
+                {% if module.quiz_unlocked %}
+                    <a href="{{ url_for('learn.quiz', module_id=module.id) }}">
+                        Module quiz{% if module.best_score is not none %} · best {{ module.best_score }}%{% endif %}
+                    </a>
+                {% else %}
+                    <span>Module quiz (unlocks after the last lesson)</span>
+                {% endif %}
+            </li>
+        </ul>
+
+        <div style="margin-top:18px;">
+            <a class="app-btn dark" href="{{ url_for('learn.start') }}">
+                {% if module.passed %}Continue learning{% elif module.pct > 0 %}Continue module{% else %}Start module{% endif %}
+            </a>
+            <a class="app-btn outline-dark" href="{{ url_for('main.course') }}">Back to course</a>
+        </div>
+    </section>
+
+    <aside class="db-panel mo-side">
+        <h3>What you will learn</h3>
+        <ul>
+            {% for o in module.objectives %}<li>{{ o }}</li>{% endfor %}
+        </ul>
+        <p class="db-meta" style="margin-top:14px;">Quiz pass mark: {{ pass_mark }}%. You can retake the quiz as often as you like.</p>
+    </aside>
+</div>
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends "app_base.html" %}
+{% set active = 'course' %}
+{% block title %}Quiz – NetLearn{% endblock %}
+{% block page_title %}Quiz{% endblock %}
+
+{% block content %}
+
+<div class="pg-head">
+    <span class="db-label">Module {{ module.number }} quiz</span>
+    <h1>{{ module.title }}</h1>
+    <p>{{ questions | length }} questions · pass mark {{ pass_mark }}% · you can retake the quiz as often as you like.</p>
+</div>
+
+<form method="post" class="qz" id="qz-form">
+    {% for q in questions %}
+    {% set qi = loop.index0 %}
+    <section class="db-panel qz-q">
+        <div class="qz-n">Question {{ loop.index }} of {{ questions | length }}</div>
+        <h3>{{ q.q }}</h3>
+        {% for opt in q.options %}
+        <label class="qz-opt">
+            <input type="radio" name="q{{ qi }}" value="{{ loop.index0 }}" required>
+            <span>{{ opt }}</span>
+        </label>
+        {% endfor %}
+    </section>
+    {% endfor %}
+
+    <div class="qz-bar">
+        <span class="db-meta" id="qz-count">0 of {{ questions | length }} answered</span>
+        <button class="app-btn dark" type="submit">Submit answers</button>
+    </div>
+</form>
+
+<script>
+(function () {
+    var form = document.getElementById('qz-form');
+    var total = {{ questions | length }};
+    var out = document.getElementById('qz-count');
+    function update() {
+        var names = {};
+        form.querySelectorAll('input[type=radio]:checked').forEach(function (r) { names[r.name] = true; });
+        out.textContent = Object.keys(names).length + ' of ' + total + ' answered';
+    }
+    form.addEventListener('change', update);
+})();
+</script>
+{% endblock %}

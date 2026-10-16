@@ -1,0 +1,450 @@
+{% extends "base.html" %}
+{% block title %}NetLearn – Learn Networking Step by Step{% endblock %}
+{% block main_class %}container-wide{% endblock %}
+
+{% block content %}
+
+{# One relevant action per user state #}
+{% macro cta_pair(enrolled, nxt) %}
+    {% if g.user %}
+        {% if not enrolled %}
+            <form class="hp-inline" method="post" action="{{ url_for('main.enroll') }}">
+                <button class="hp-btn hp-btn-primary" type="submit">Enroll Now</button>
+            </form>
+        {% elif nxt %}
+            <a class="hp-btn hp-btn-primary" href="{{ url_for('learn.start') }}">Continue Learning</a>
+        {% else %}
+            <a class="hp-btn hp-btn-primary" href="{{ url_for('main.dashboard') }}">Go to Dashboard</a>
+        {% endif %}
+    {% else %}
+        <a class="hp-btn hp-btn-primary" href="{{ url_for('auth.register') }}">Get Started – Register</a>
+        <a class="hp-btn hp-btn-outline" href="{{ url_for('auth.login') }}">Login</a>
+    {% endif %}
+{% endmacro %}
+
+<!-- ================= HERO ================= -->
+<section class="hp-hero">
+    <div class="hp-wrap hp-hero-grid">
+        <div class="hp-hero-text">
+            <span class="hp-pill">Networking · Beginner to Intermediate</span>
+            <h1>Learn Networking <span>Step by Step</span></h1>
+            <p>
+                Clear notes, hands-on simulators and quizzes, everything you need to
+                understand how real networks work, all in one place.
+            </p>
+            <div class="hp-actions">
+                {{ cta_pair(enrolled , nxt) }}
+            </div>
+            <ul class="hp-trust">
+                <li>Simple notes</li>
+                <li>Interactive labs</li>
+                <li>Quizzes</li>
+                <li>Verifiable certificate</li>
+            </ul>
+        </div>
+
+        <div class="hp-hero-art">
+            <svg viewBox="0 0 520 400" xmlns="http://www.w3.org/2000/svg" role="img"
+                 aria-label="Illustration of a small computer network with animated data packets">
+                <defs>
+                    <g id="pc">
+                        <rect x="-14" y="-12" width="28" height="19" rx="3" fill="#0f2a63" stroke="#7dd3fc" stroke-width="2"/>
+                        <rect x="-9" y="-8" width="18" height="11" rx="1" fill="#38bdf8" opacity=".35"/>
+                        <rect x="-8" y="10" width="16" height="3" rx="1.5" fill="#7dd3fc"/>
+                    </g>
+                    <g id="sw">
+                        <rect x="-24" y="-10" width="48" height="20" rx="4" fill="#0f2a63" stroke="#7dd3fc" stroke-width="2"/>
+                        <circle cx="-14" cy="0" r="2.5" fill="#38bdf8"/><circle cx="-5" cy="0" r="2.5" fill="#38bdf8"/>
+                        <circle cx="4" cy="0" r="2.5" fill="#38bdf8"/><circle cx="13" cy="0" r="2.5" fill="#38bdf8"/>
+                    </g>
+                    <g id="srv">
+                        <rect x="-16" y="-16" width="32" height="14" rx="3" fill="#0f2a63" stroke="#7dd3fc" stroke-width="2"/>
+                        <rect x="-16" y="1" width="32" height="14" rx="3" fill="#0f2a63" stroke="#7dd3fc" stroke-width="2"/>
+                        <circle cx="-8" cy="-9" r="2" fill="#38bdf8"/><circle cx="-8" cy="8" r="2" fill="#38bdf8"/>
+                    </g>
+                </defs>
+
+                <g stroke="#38bdf8" stroke-width="2.5" opacity=".55" fill="none">
+                    <path d="M260 70 L260 190"/>
+                    <path d="M260 190 L110 260"/>
+                    <path d="M260 190 L410 260"/>
+                    <path d="M260 190 L260 330"/>
+                    <path d="M110 260 L50 350"/>
+                    <path d="M110 260 L170 350"/>
+                    <path d="M410 260 L350 350"/>
+                    <path d="M410 260 L470 350"/>
+                </g>
+
+                <g transform="translate(260 58)" fill="#7dd3fc">
+                    <circle cx="-22" cy="4" r="15"/><circle cx="0" cy="-6" r="20"/>
+                    <circle cx="24" cy="4" r="15"/><rect x="-37" y="4" width="76" height="15" rx="7"/>
+                </g>
+                <text x="260" y="104" text-anchor="middle" font-size="12" fill="#bae6fd" font-family="Segoe UI, Arial">Internet</text>
+
+                <circle cx="260" cy="190" r="28" fill="#2563eb" stroke="#bae6fd" stroke-width="3"/>
+                <g stroke="#fff" stroke-width="3" stroke-linecap="round" fill="none">
+                    <path d="M247 190 H273 M266 183 L273 190 L266 197"/>
+                    <path d="M260 177 V203 M253 184 L260 177 L267 184"/>
+                </g>
+                <text x="260" y="236" text-anchor="middle" font-size="12" fill="#bae6fd" font-family="Segoe UI, Arial">Router</text>
+
+                <use href="#sw" transform="translate(110 260)"/>
+                <use href="#sw" transform="translate(410 260)"/>
+                <use href="#srv" transform="translate(260 340)"/>
+                <use href="#pc" transform="translate(50 360)"/>
+                <use href="#pc" transform="translate(170 360)"/>
+                <use href="#pc" transform="translate(350 360)"/>
+                <use href="#pc" transform="translate(470 360)"/>
+                <text x="110" y="288" text-anchor="middle" font-size="11" fill="#bae6fd" font-family="Segoe UI, Arial">Switch</text>
+                <text x="410" y="288" text-anchor="middle" font-size="11" fill="#bae6fd" font-family="Segoe UI, Arial">Switch</text>
+                <text x="260" y="382" text-anchor="middle" font-size="11" fill="#bae6fd" font-family="Segoe UI, Arial">Server</text>
+
+                <circle r="6" fill="#ffffff">
+                    <animateMotion dur="4.5s" repeatCount="indefinite"
+                        path="M50 350 L110 260 L260 190 L260 70"/>
+                </circle>
+                <circle r="6" fill="#7dd3fc">
+                    <animateMotion dur="5.5s" repeatCount="indefinite"
+                        path="M470 350 L410 260 L260 190 L110 260 L170 350"/>
+                </circle>
+                <circle r="5" fill="#ffffff">
+                    <animateMotion dur="3.8s" repeatCount="indefinite"
+                        path="M260 330 L260 190 L410 260 L350 350"/>
+                </circle>
+            </svg>
+        </div>
+    </div>
+</section>
+
+<!-- ================= WHY NETWORKING (light) ================= -->
+<section class="hx-why">
+    <div class="hx-blob b1"></div>
+    <div class="hx-blob b2"></div>
+    <div class="hp-wrap">
+        <span class="hx-eyebrow">The big picture</span>
+        <h2 class="hx-title">Why Networking Matters Today</h2>
+        <p class="hx-sub">
+            Almost everything we use every day (apps, banking, streaming, schools,
+            hospitals) runs on networks. Understanding them is a foundation for nearly every IT career.
+        </p>
+
+        <div class="hx-grid4">
+            <article class="hx-feat">
+                <div class="hx-feat-icon">
+                    <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+                        <circle cx="20" cy="20" r="15"/><ellipse cx="20" cy="20" rx="6.5" ry="15"/>
+                        <path d="M5 20 H35 M8 12 H32 M8 28 H32"/>
+                    </svg>
+                </div>
+                <h3>Internet &amp; Cloud</h3>
+                <p>Websites, cloud platforms and streaming all depend on networks moving data reliably.</p>
+                <span class="hx-tag">Cloud · Streaming · Apps</span>
+            </article>
+
+            <article class="hx-feat">
+                <div class="hx-feat-icon alt">
+                    <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 4 L34 10 V20 C34 29 28 35 20 38 C12 35 6 29 6 20 V10 Z"/>
+                        <path d="M13 20 L18 25 L27 15"/>
+                    </svg>
+                </div>
+                <h3>Cybersecurity</h3>
+                <p>You can't defend a network you don't understand. Security starts with networking basics.</p>
+                <span class="hx-tag">Firewalls · Defense · Safety</span>
+            </article>
+
+            <article class="hx-feat">
+                <div class="hx-feat-icon">
+                    <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 16 L20 6 L36 16 Z"/>
+                        <path d="M9 19 V30 M16 19 V30 M24 19 V30 M31 19 V30"/>
+                        <path d="M4 34 H36"/>
+                    </svg>
+                </div>
+                <h3>Banking &amp; Healthcare</h3>
+                <p>Banks, hospitals and governments rely on secure, always-available networks.</p>
+                <span class="hx-tag">Reliability · Security</span>
+            </article>
+
+            <article class="hx-feat">
+                <div class="hx-feat-icon alt">
+                    <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="11" y="11" width="18" height="18" rx="3"/>
+                        <rect x="16" y="16" width="8" height="8" rx="1"/>
+                        <path d="M16 4 V11 M24 4 V11 M16 29 V36 M24 29 V36 M4 16 H11 M4 24 H11 M29 16 H36 M29 24 H36"/>
+                    </svg>
+                </div>
+                <h3>IoT &amp; Smart Devices</h3>
+                <p>Billions of connected devices, from phones to sensors, all need to be networked.</p>
+                <span class="hx-tag">Sensors · Smart homes</span>
+            </article>
+        </div>
+    </div>
+</section>
+
+<!-- ================= HOW IT WORKS (dark) ================= -->
+<section class="hx-how hx-dots">
+    <div class="hp-wrap">
+        <span class="hx-eyebrow light">Your learning journey</span>
+        <h2 class="hx-title light">How It Works</h2>
+        <p class="hx-sub light">A simple path from complete beginner to certified learner.</p>
+
+        <div class="hx-timeline">
+            <div class="hx-line"><span class="hx-packet"></span></div>
+
+            <div class="hx-tstep">
+                <div class="hx-node">
+                    <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="17" cy="14" r="6"/>
+                        <path d="M5 34 C5 26 10 22 17 22 C20 22 22.5 22.8 24.5 24.3"/>
+                        <path d="M31 22 V34 M25 28 H37"/>
+                    </svg>
+                </div>
+                <div class="hx-tbody">
+                    <span class="hx-stepno">STEP 1</span>
+                    <h3>Enroll</h3>
+                    <p>Create an account and join the course. It only takes a minute.</p>
+                </div>
+            </div>
+
+            <div class="hx-tstep">
+                <div class="hx-node">
+                    <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M6 8 H17 C19 8 20 9 20 11 V33 C20 31.5 19 31 17 31 H6 Z"/>
+                        <path d="M34 8 H23 C21 8 20 9 20 11 V33 C20 31.5 21 31 23 31 H34 Z"/>
+                    </svg>
+                </div>
+                <div class="hx-tbody">
+                    <span class="hx-stepno">STEP 2</span>
+                    <h3>Learn</h3>
+                    <p>Read short, simple lessons, one concept at a time, in the right order.</p>
+                </div>
+            </div>
+
+            <div class="hx-tstep">
+                <div class="hx-node">
+                    <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="5" y="7" width="30" height="26" rx="4"/>
+                        <path d="M12 16 L18 21 L12 26 M21 27 H28"/>
+                    </svg>
+                </div>
+                <div class="hx-tbody">
+                    <span class="hx-stepno">STEP 3</span>
+                    <h3>Practice</h3>
+                    <p>Use simulators and take a quiz after every module to lock in what you learned.</p>
+                </div>
+            </div>
+
+            <div class="hx-tstep">
+                <div class="hx-node">
+                    <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="20" cy="16" r="9"/>
+                        <path d="M14 24 L11 36 L20 31 L29 36 L26 24"/>
+                        <path d="M16 16 L19 19 L24 13"/>
+                    </svg>
+                </div>
+                <div class="hx-tbody">
+                    <span class="hx-stepno">STEP 4</span>
+                    <h3>Get Certified</h3>
+                    <p>Pass all module quizzes to earn a completion certificate you can download.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ================= ROADMAP (light) ================= -->
+<section class="hx-road">
+    <div class="hp-wrap">
+        <span class="hx-eyebrow">Your learning path</span>
+        <h2 class="hx-title">Course Roadmap</h2>
+        <p class="hx-sub">
+            Each module unlocks after you pass the previous module's quiz,
+            so you always build on solid ground.
+        </p>
+
+        <div class="hx-road-grid">
+            {% for block in outline %}
+            <div class="hx-level">
+                <div class="hx-level-head {{ 'inter' if block.level == 'Intermediate' else '' }}">
+                    <span class="hx-level-dot"></span>
+                    {{ block.level }}
+                    <small>{{ block.modules | length }} modules</small>
+                </div>
+                <ol class="hx-path">
+                    {% for m in block.modules %}
+                    <li class="hx-pnode {{ 'live' if m.ready else 'soon' }}">
+                        <span class="hx-pdot">{{ loop.index }}</span>
+                        <div class="hx-pcard">
+                            <div class="hx-ptop">
+                                <h3>{{ m.title }}</h3>
+                                {% if m.ready %}
+                                    <span class="hp-badge live">Available</span>
+                                {% else %}
+                                    <span class="hp-badge soon">Coming soon</span>
+                                {% endif %}
+                            </div>
+                            <p>{{ m.desc }}</p>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ol>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- ================= LABS ================= -->
+<section class="hp-section hp-navy">
+    <div class="hp-wrap">
+        <h2 class="hp-title light">Hands-on Labs, Right in Your Browser</h2>
+        <p class="hp-sub light">
+            No physical equipment needed. These simulators are built to help you understand the
+            concepts, and they work alongside real tools like Cisco Packet Tracer.
+        </p>
+
+        <div class="hp-grid hp-grid-3">
+            <a class="hp-lab" href="{{ url_for('tools.subnet') }}">
+                <div class="hp-mini hp-mono">
+                    192.168.1.130 /26<br>
+                    Network&nbsp;&nbsp;&nbsp;192.168.1.128<br>
+                    Broadcast&nbsp;192.168.1.191<br>
+                    Usable&nbsp;hosts&nbsp;62
+                </div>
+                <h3>Subnet Calculator</h3>
+                <p>Enter an IP and prefix to see the network, broadcast, host range and binary view instantly.</p>
+                <span class="hp-link">Open tool →</span>
+            </a>
+
+            <a class="hp-lab" href="{{ url_for('tools.packet_walk') }}">
+                <div class="hp-mini hp-mono">
+                    PC-A → R1 → R2 → R3<br>
+                    <span class="hp-hl">Best match: 192.168.3.0/24</span><br>
+                    Longest Prefix Match<br>
+                    at every hop
+                </div>
+                <h3>Packet Walk Simulation</h3>
+                <p>Follow a packet hop by hop and see exactly how each router chooses the next hop.</p>
+                <span class="hp-link">Open tool →</span>
+            </a>
+
+            <a class="hp-lab" href="{{ url_for('tools.cli_lab') }}">
+                <div class="hp-mini hp-mono">
+                    R1# configure terminal<br>
+                    R1(config)# ip route<br>
+                    &nbsp;192.168.3.0 255.255.255.0<br>
+                    &nbsp;10.0.12.2
+                </div>
+                <h3>Router CLI Lab</h3>
+                <p>Type Cisco-style commands, configure static routes and test the result with ping.</p>
+                <span class="hp-link">Open lab →</span>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ================= ABOUT ================= -->
+<section class="hp-section hp-mist">
+    <div class="hp-wrap hp-about">
+        <div class="hp-about-badge">
+            <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="32" cy="14" r="7"/><circle cx="12" cy="48" r="7"/><circle cx="52" cy="48" r="7"/>
+                <path d="M28 20 L16 42 M36 20 L48 42 M19 48 H45"/>
+            </svg>
+        </div>
+        <div>
+            <h2 class="hp-title left">About the Creator</h2>
+            <p>
+                Hi, I'm <strong>{{ config.CREATOR_NAME }}</strong>, a networking student.
+                I built NetLearn because the best way to truly learn networking is to build
+                something with it. Every lesson, quiz and simulator on this site was designed
+                to turn complex ideas into simple, practical steps, the way I wished they had
+                been explained to me.
+            </p>
+            <p>
+                The project is built with Python, Flask, NetworkX and SQLite, and it keeps
+                growing with new modules and labs.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- ================= FAQ (dark) ================= -->
+<section class="hx-faqsec hx-dots">
+    <div class="hp-wrap hx-faq-grid">
+        <div class="hx-faq-side">
+            <div class="hx-faq-art">
+                <svg viewBox="0 0 260 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Shield with a question mark connected to network nodes">
+                    <g stroke="#38bdf8" stroke-width="2" opacity=".55" fill="none">
+                        <path d="M40 40 L130 110 L220 50 M130 110 L60 180 M130 110 L210 170"/>
+                    </g>
+                    <g fill="#0f2a63" stroke="#7dd3fc" stroke-width="2">
+                        <circle cx="40" cy="40" r="10"/><circle cx="220" cy="50" r="10"/>
+                        <circle cx="60" cy="180" r="10"/><circle cx="210" cy="170" r="10"/>
+                    </g>
+                    <path d="M130 55 L172 70 V108 C172 135 155 152 130 162 C105 152 88 135 88 108 V70 Z"
+                          fill="#2563eb" stroke="#bae6fd" stroke-width="3"/>
+                    <text x="130" y="127" text-anchor="middle" font-size="46" font-weight="700"
+                          fill="#fff" font-family="Segoe UI, Arial">?</text>
+                </svg>
+            </div>
+            <span class="hx-eyebrow light" style="text-align:left;">Got questions?</span>
+            <h2>Frequently Asked Questions</h2>
+            <p>Everything you need to know before you start learning.</p>
+        </div>
+
+        <div class="hx-faq-list">
+            <details class="hx-faq">
+                <summary>Do I need any prior networking knowledge?</summary>
+                <p>No. The course starts from the very basics and every module builds on the one before it.</p>
+            </details>
+            <details class="hx-faq">
+                <summary>Do I need routers or switches to practice?</summary>
+                <p>No. The built-in simulators let you practice subnetting, routing decisions and basic router commands right in your browser.</p>
+            </details>
+            <details class="hx-faq">
+                <summary>Is the certificate an official qualification?</summary>
+                <p>
+                    No. It is a course-completion certificate issued by the NetLearn platform. Every certificate
+                    has a unique ID that anyone can verify on this site, but it is not an accredited qualification.
+                </p>
+            </details>
+            <details class="hx-faq">
+                <summary>Is my progress saved?</summary>
+                <p>Yes. Your completed lessons and quiz results are saved to your account, so you can continue any time.</p>
+            </details>
+            <details class="hx-faq">
+                <summary>Can I learn on my phone?</summary>
+                <p>Yes. The site adapts to phones, tablets and computers, though the lab simulators are easiest to use on a larger screen.</p>
+            </details>
+        </div>
+    </div>
+</section>
+
+<!-- ================= FINAL CTA ================= -->
+<section class="hp-final">
+    <div class="hp-wrap">
+        <h2>Ready to understand how networks really work?</h2>
+        <p>Start with the basics and build your way up, one module at a time.</p>
+        <div class="hp-actions">
+            {{ cta_pair(enrolled) }}
+        </div>
+    </div>
+</section>
+
+<script>
+/* Sections fade in softly as you scroll (page works fine without JS) */
+(function () {
+    if (!('IntersectionObserver' in window)) { return; }
+    var els = document.querySelectorAll('.hx-feat, .hx-tstep, .hx-pnode, .hx-faq');
+    var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+            if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); }
+        });
+    }, {threshold: 0.12});
+    els.forEach(function (e) { e.classList.add('rv'); io.observe(e); });
+})();
+</script>
+
+{% endblock %}

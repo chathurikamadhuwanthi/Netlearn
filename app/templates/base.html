@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}NetLearn{% endblock %}</title>
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='img/favicon.svg') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <a class="brand" href="{{ url_for('main.home') }}">{% include "_logo.html" %}</a>
+        <div class="nav-links">
+            <a class="nav-link {{ 'active' if request.endpoint == 'main.home' }}" href="{{ url_for('main.home') }}">Home</a>
+            {% if g.user %}
+                <a class="nav-link {{ 'active' if request.endpoint == 'main.dashboard' }}" href="{{ url_for('main.dashboard') }}">Dashboard</a>
+                <a class="nav-link {{ 'active' if request.endpoint == 'certificate.view' }}" href="{{ url_for('certificate.view') }}">Certificate</a>
+                <a class="nav-link {{ 'active' if request.endpoint == 'main.profile' }}" href="{{ url_for('main.profile') }}">Profile</a>
+                <a class="nav-btn ghost" href="{{ url_for('auth.logout') }}">Logout</a>
+            {% else %}
+                <a class="nav-btn ghost" href="{{ url_for('auth.login') }}">Login</a>
+                <a class="nav-btn solid" href="{{ url_for('auth.register') }}">Register</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    {# Notifications (toasts) #}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="toast-stack">
+            {% for category, message in messages %}
+            <div class="toast {{ category }}" role="status">
+                <span class="toast-icon">{% if category == 'success' %}✓{% elif category == 'error' %}!{% else %}i{% endif %}</span>
+                <span class="toast-msg">{{ message }}</span>
+                <button class="toast-close" type="button" aria-label="Close">×</button>
+                <span class="toast-bar"></span>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    {% endwith %}
+
+    <main class="container {% block main_class %}{% endblock %}">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <p>NetLearn – Learn networking step by step</p>
+    </footer>
+
+    <script>
+    /* Toasts close on click and disappear automatically */
+    (function () {
+        document.querySelectorAll('.toast').forEach(function (el, i) {
+            function close() {
+                el.classList.add('hide');
+                setTimeout(function () { el.remove(); }, 350);
+            }
+            el.querySelector('.toast-close').addEventListener('click', close);
+            setTimeout(close, 4500 + i * 600);
+        });
+    })();
+    </script>
+</body>
+</html>

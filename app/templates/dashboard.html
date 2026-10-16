@@ -1,0 +1,109 @@
+{% extends "app_base.html" %}
+{% set active = 'dashboard' %}
+{% block title %}Dashboard – NetLearn{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+
+<div class="pg-head">
+    <h1>{{ hero.title }}</h1>
+    <p>{{ hero.sub }}</p>
+</div>
+
+{% if not enrolled %}
+
+<section class="db-panel db-welcome">
+    <div>
+        <h2>Start the NetLearn course</h2>
+        <p>{{ stats.modules_total }} modules available · {{ stats.lessons_total }} lessons · 3 interactive labs · a certificate when you finish.</p>
+    </div>
+    <form method="post" action="{{ url_for('main.enroll') }}">
+        <button class="app-btn dark" type="submit">Enroll Now</button>
+    </form>
+</section>
+
+{% else %}
+
+<section class="db-panel db-resume">
+    <div class="db-resume-main">
+        {% if resume %}
+            <span class="db-label">Continue learning</span>
+            <h2>{{ resume.module.title }}</h2>
+            <p class="db-meta">Module {{ resume.module.number }} · {{ resume.label }}</p>
+            <progress class="app-prog thin" value="{{ resume.module.pct }}" max="100"></progress>
+            <a class="app-btn dark" href="{{ url_for('learn.start') }}">Resume</a>
+        {% else %}
+            <span class="db-label">All caught up</span>
+            <h2>All modules completed</h2>
+            <p class="db-meta">Your certificate is ready. New modules are coming soon.</p>
+            <a class="app-btn dark" style="margin-top:14px;" href="{{ url_for('certificate.view') }}">View certificate</a>
+        {% endif %}
+    </div>
+    <div class="db-resume-side">
+        <span class="db-label">Overall progress</span>
+        <div class="db-big">{{ percent }}%</div>
+        <progress class="app-prog thin" value="{{ percent }}" max="100"></progress>
+        <p class="db-meta" style="margin-top:8px;">
+            {{ stats.steps_done }} of {{ stats.steps_total }} steps · {{ stats.quizzes_passed }} of {{ stats.modules_total }} quizzes passed
+        </p>
+    </div>
+</section>
+
+{% endif %}
+
+<div class="dash-h">
+    <h2>{{ 'Your modules' if enrolled else 'What you will learn' }}</h2>
+    <a href="{{ url_for('main.course') }}">View curriculum →</a>
+</div>
+
+<section class="db-panel db-list">
+    {% for m in course %}
+    {% set st = m.status if enrolled else ('open' if m.available else 'coming_soon') %}
+    <div class="db-row {{ st }}">
+        <span class="db-num">{% if enrolled and m.status == 'completed' %}✓{% else %}{{ m.number }}{% endif %}</span>
+
+        <div class="db-row-main">
+            <b>{{ m.title }}</b>
+            <small>
+                {{ m.level }}
+                {% if enrolled and m.available and m.status != 'locked' %}
+                    · {{ m.lessons | selectattr('done') | list | length }}/{{ m.lessons | length }} lessons
+                    {% if m.best_score is not none %}· Quiz best {{ m.best_score }}%{% endif %}
+                {% elif enrolled and m.status == 'locked' %}
+                    · Unlocks after the Module {{ m.number - 1 }} quiz
+                {% elif not enrolled and m.available %}
+                    · {{ m.lessons | length }} lessons + quiz
+                {% endif %}
+            </small>
+        </div>
+
+        <div class="db-row-status">
+            <i class="st-dot {{ st }}"></i>
+            {% if not m.available %}Coming soon
+            {% elif not enrolled %}Available
+            {% elif m.status == 'completed' %}Completed
+            {% elif m.status == 'open' %}{{ ('In progress · ' ~ m.pct ~ '%') if m.pct > 0 else 'Ready to start' }}
+            {% else %}Locked{% endif %}
+        </div>
+
+        <div class="db-row-action">
+            {% if enrolled and m.status in ('open', 'completed') %}
+                <a class="db-link" href="{{ url_for('learn.module', module_id=m.id) }}">{{ 'Review' if m.status == 'completed' else 'Open' }}</a>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</section>
+
+{% if enrolled %}
+<p class="db-foot">
+    {% if course_done or has_cert %}
+        Your certificate is ready. <a href="{{ url_for('certificate.view') }}">View certificate</a>
+    {% else %}
+        Pass the quiz of every available module to unlock your certificate
+        ({{ stats.quizzes_passed }} of {{ stats.modules_total }} done).
+    {% endif %}
+</p>
+{% endif %}
+
+{% endblock %}

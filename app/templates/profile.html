@@ -1,0 +1,100 @@
+{% extends "app_base.html" %}
+{% set active = 'profile' %}
+{% block title %}Profile – NetLearn{% endblock %}
+{% block page_title %}Profile{% endblock %}
+
+{% block content %}
+
+<div class="pg-head">
+    <h1>Your profile</h1>
+    <p>Manage your personal details and keep your account secure.</p>
+</div>
+
+<div class="pf-grid">
+    <aside class="pf-summary">
+        <div class="pf-avatar">{{ g.user['name'][:1] | upper }}</div>
+        <h2>{{ g.user['name'] }}</h2>
+        <p class="pf-email">{{ g.user['email'] }}</p>
+        <div class="pf-chips">
+            <span class="pf-chip {{ 'ok' if enrolled }}">{{ 'Enrolled' if enrolled else 'Not enrolled' }}</span>
+            <span class="pf-chip">Member since {{ g.user['created_at'][:10] }}</span>
+        </div>
+    </aside>
+
+    <div class="pf-forms">
+        <section class="pf-card">
+            <h2>Personal details</h2>
+            <p class="au-sub">Your name appears on your certificate.</p>
+            <form method="post" class="au-form">
+                <input type="hidden" name="action" value="details">
+
+                <label for="name">Full name</label>
+                <div class="au-field">
+                    <span class="au-ico">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21 C4 16 8 14 12 14 C16 14 20 16 20 21"/></svg>
+                    </span>
+                    <input type="text" id="name" name="name" value="{{ g.user['name'] }}" autocomplete="name" required>
+                </div>
+
+                <label for="email">Email</label>
+                <div class="au-field">
+                    <span class="au-ico">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3 8 L12 14 L21 8"/></svg>
+                    </span>
+                    <input type="email" id="email" name="email" value="{{ g.user['email'] }}" autocomplete="email" required>
+                </div>
+
+                <button class="au-submit" type="submit">Save changes</button>
+            </form>
+        </section>
+
+        <section class="pf-card">
+            <h2>Change password</h2>
+            <p class="au-sub">Use at least 8 characters.</p>
+            <form method="post" class="au-form">
+                <input type="hidden" name="action" value="password">
+
+                <label for="current">Current password</label>
+                <div class="au-field">
+                    <span class="au-ico">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2.5"/><path d="M8 11 V8 a4 4 0 0 1 8 0 V11"/></svg>
+                    </span>
+                    <input type="password" id="current" name="current" autocomplete="current-password" required>
+                    <button type="button" class="au-eye" data-target="current">Show</button>
+                </div>
+
+                <label for="new">New password</label>
+                <div class="au-field">
+                    <span class="au-ico">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2.5"/><path d="M8 11 V8 a4 4 0 0 1 8 0 V11"/></svg>
+                    </span>
+                    <input type="password" id="new" name="new" minlength="8" autocomplete="new-password" required>
+                    <button type="button" class="au-eye" data-target="new">Show</button>
+                </div>
+
+                <label for="confirm">Confirm new password</label>
+                <div class="au-field">
+                    <span class="au-ico">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2.5"/><path d="M8 11 V8 a4 4 0 0 1 8 0 V11"/></svg>
+                    </span>
+                    <input type="password" id="confirm" name="confirm" minlength="8" autocomplete="new-password" required>
+                    <button type="button" class="au-eye" data-target="confirm">Show</button>
+                </div>
+
+                <button class="au-submit" type="submit">Change password</button>
+            </form>
+        </section>
+    </div>
+</div>
+
+<script>
+document.querySelectorAll('.au-eye').forEach(function (b) {
+    b.addEventListener('click', function () {
+        var i = document.getElementById(b.dataset.target);
+        var show = i.type === 'password';
+        i.type = show ? 'text' : 'password';
+        b.textContent = show ? 'Hide' : 'Show';
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,101 @@
+{% extends "app_base.html" %}
+{% set active = 'course' %}
+{% block title %}Course – NetLearn{% endblock %}
+{% block page_title %}Course{% endblock %}
+
+{% block content %}
+
+<div class="pg-head">
+    <h1>Course curriculum</h1>
+    <p>{{ summary.modules }} modules · {{ summary.lessons }} lessons · a quiz after every module.
+       Each module unlocks after you pass the previous module's quiz.</p>
+</div>
+
+{% if not enrolled %}
+<section class="db-panel db-welcome">
+    <div>
+        <h2>You have not enrolled yet</h2>
+        <p>Enroll to unlock the lessons, quizzes and your certificate.</p>
+    </div>
+    <form method="post" action="{{ url_for('main.enroll') }}">
+        <button class="app-btn dark" type="submit">Enroll Now</button>
+    </form>
+</section>
+{% endif %}
+
+{% set ns = namespace(shown=false) %}
+<section class="cr">
+    {% for m in course %}
+    {% set st = m.status if enrolled else ('open' if m.available else 'coming_soon') %}
+    {% set current = enrolled and m.status == 'open' and not ns.shown %}
+    {% if current %}{% set ns.shown = true %}{% endif %}
+
+    <details class="cr-mod {{ st }}" {{ 'open' if current }}>
+        <summary>
+            <span class="cr-num">{% if enrolled and m.status == 'completed' %}✓{% else %}{{ m.number }}{% endif %}</span>
+            <span class="cr-title">
+                <b>{{ m.title }}</b>
+                <small>{{ m.level }}{% if m.available %} · {{ m.lessons | length }} lessons + quiz{% endif %}</small>
+            </span>
+            <span class="cr-status">
+                <i class="st-dot {{ st }}"></i>
+                {% if not m.available %}Coming soon
+                {% elif not enrolled %}Available
+                {% elif m.status == 'completed' %}Completed
+                {% elif m.status == 'open' %}{{ 'In progress' if m.pct > 0 else 'Ready to start' }}
+                {% else %}Locked{% endif %}
+            </span>
+            <span class="cr-chev"></span>
+        </summary>
+
+        <div class="cr-body">
+            <p class="cr-desc">{{ m.desc }}</p>
+
+            {% if m.available %}
+                {% if enrolled and m.status != 'locked' %}
+                    <progress class="app-prog thin" value="{{ m.pct }}" max="100"></progress>
+                {% endif %}
+
+                <ul class="cr-lessons">
+                    {% for l in m.lessons %}
+                        {% set can_open = enrolled and l.unlocked %}
+                        {% set is_done = enrolled and l.done %}
+                        <li class="{{ 'done' if is_done else ('open' if can_open else 'locked') }}">
+                            <span class="cr-mark">{% if is_done %}✓{% else %}{{ loop.index }}{% endif %}</span>
+                            {% if can_open %}
+                                <a href="{{ url_for('learn.lesson', module_id=m.id, lesson_id=l.id) }}">{{ l.title }}</a>
+                            {% else %}
+                                <span>{{ l.title }}</span>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                    <li class="{{ 'done' if (enrolled and m.passed) else ('open' if (enrolled and m.quiz_unlocked) else 'locked') }}">
+                        <span class="cr-mark">{% if enrolled and m.passed %}✓{% else %}Q{% endif %}</span>
+                        {% if enrolled and m.quiz_unlocked %}
+                            <a href="{{ url_for('learn.quiz', module_id=m.id) }}">
+                                Module quiz{% if m.best_score is not none %} · best {{ m.best_score }}%{% endif %}
+                            </a>
+                        {% else %}
+                            <span>Module quiz</span>
+                        {% endif %}
+                    </li>
+                </ul>
+
+                {% if enrolled and m.status in ('open', 'completed') %}
+                    <a class="app-btn dark small" href="{{ url_for('learn.module', module_id=m.id) }}">
+                        {% if m.status == 'completed' %}Review module{% elif m.pct > 0 %}Continue module{% else %}Start module{% endif %}
+                    </a>
+                {% elif enrolled and m.status == 'locked' %}
+                    <span class="cr-note">Unlocks after you pass the Module {{ m.number - 1 }} quiz.</span>
+                {% elif not enrolled %}
+                    <span class="cr-note">Enroll to start this module.</span>
+                {% endif %}
+            {% else %}
+                <span class="cr-note">Lessons are being prepared.</span>
+            {% endif %}
+        </div>
+    </details>
+    {% endfor %}
+</section>
+
+{% endblock %}

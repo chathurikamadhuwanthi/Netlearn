@@ -1,0 +1,202 @@
+{% extends "app_base.html" if g.user else "base.html" %}
+{% set active = 'lab' ~ lab.n %}
+{% block title %}{{ lab.title }} – NetLearn{% endblock %}
+{% block page_title %}{{ lab.short }}{% endblock %}
+{% block main_class %}tool-public{% endblock %}
+
+{% block content %}
+
+<section class="tool-hero">
+    <div>
+        <span class="resume-tag">{{ lab.badge }}</span>
+        <h2>{{ lab.title }}</h2>
+        <p>{{ lab.intro }}</p>
+    </div>
+    <div class="tool-hero-ico">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M7 10 L10 12.5 L7 15 M12 15 H17"/></svg>
+    </div>
+</section>
+
+{% include lab.topology %}
+
+<section class="tcard">
+    <h3 class="tcard-title">Your task</h3>
+    {% if lab.extra %}{{ lab.extra | safe }}{% endif %}
+    <ol class="task-list">
+        {% for t in lab.tasks %}<li>{{ t | safe }}</li>{% endfor %}
+        <li><strong>Bonus :</strong> {{ lab.bonus | safe }}</li>
+    </ol>
+</section>
+
+<section class="tcard">
+    <div class="tabs">
+        {% for d in devices %}
+            <button type="button" class="tab" data-router="{{ d }}">{{ d }}</button>
+        {% endfor %}
+    </div>
+
+    <div class="term-wrap" id="termwrap">
+        {% for d in devices %}
+            <div class="term" id="term-{{ d }}"></div>
+        {% endfor %}
+        <div class="term-input-row">
+            <span id="prompt"></span><input id="cmd" type="text" autocomplete="off" spellcheck="false">
+        </div>
+    </div>
+
+    <p style="margin-top:12px;">
+        <button type="button" class="btn" id="check-btn">✅ Check my work</button>
+        <button type="button" class="btn btn-gray" id="reset-btn">🔄 Reset lab</button>
+    </p>
+    <div id="check-result"></div>
+</section>
+
+<section class="tcard">
+    <h3 class="tcard-title">Commands cheat sheet</h3>
+    <div class="table-wrap">
+    <table class="result-table route-table">
+        <tr><th>Command</th><th>What it does</th></tr>
+        {% for cmd, text in lab.cheat %}
+        <tr><td><code>{{ cmd }}</code></td><td>{{ text }}</td></tr>
+        {% endfor %}
+    </table>
+    </div>
+    <p class="muted" style="margin-top:8px;">
+        Use the ↑ ↓ keys to bring back earlier commands. Short forms such as <code>conf t</code> and
+        <code>sh ip int br</code> work too. Type <code>?</code> to list what is available in the current mode.
+    </p>
+</section>
+
+<section class="tcard">
+    <details>
+        <summary> Hint / solution (try it yourself first!)</summary>
+        <pre class="topo">{{ lab.hint }}</pre>
+    </details>
+</section>
+
+<script>
+(function () {
+    var routers = {{ devices | tojson }};
+    var prompts = {{ prompts | tojson }};
+    var tabHelp = {{ lab.tab_help | tojson }};
+    var urls = {
+        cmd: "{{ url_for('tools.lab_cmd', lab_id=lab.n) }}",
+        check: "{{ url_for('tools.lab_check', lab_id=lab.n) }}",
+        reset: "{{ url_for('tools.lab_reset', lab_id=lab.n) }}"
+    };
+    var current = routers[0];
+    var cmdHist = {}, histIdx = {};
+    var promptEl = document.getElementById('prompt');
+    var input = document.getElementById('cmd');
+
+    routers.forEach(function (r) { cmdHist[r] = []; histIdx[r] = 0; });
+
+    function term(r) { return document.getElementById('term-' + r); }
+
+    function addLine(r, text, cls) {
+        var d = document.createElement('div');
+        d.className = 'term-line' + (cls ? ' ' + cls : '');
+        d.textContent = text;
+        term(r).appendChild(d);
+        term(r).scrollTop = term(r).scrollHeight;
+    }
+
+    function banner(r) {
+        addLine(r, 'Welcome to the ' + r + ' console. Type ? for help.', 'dim');
+        addLine(r, tabHelp[r] || '', 'dim');
+    }
+
+    function show(r) {
+        current = r;
+        routers.forEach(function (x) { term(x).classList.toggle('active', x === r); });
+        document.querySelectorAll('.tab').forEach(function (t) {
+            t.classList.toggle('active', t.dataset.router === r);
+        });
+        promptEl.textContent = prompts[r] + ' ';
+        input.focus();
+    }
+
+    function send() {
+        var r = current, cmd = input.value;
+        input.value = '';
+        addLine(r, prompts[r] + ' ' + cmd, 'cmd');
+        if (!cmd.trim()) { return; }
+        cmdHist[r].push(cmd);
+        histIdx[r] = cmdHist[r].length;
+
+        fetch(urls.cmd, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({router: r, cmd: cmd})
+        }).then(function (res) { return res.json(); })
+          .then(function (d) {
+              if (d.output) {
+                  d.output.split('\n').forEach(function (l) { addLine(r, l); });
+              }
+              prompts[r] = d.prompt;
+              if (r === current) { promptEl.textContent = d.prompt + ' '; }
+          }).catch(function () {
+              addLine(r, '⚠️ Could not reach the server.', 'err');
+          });
+    }
+
+    input.addEventListener('keydown', function (e) {
+        var h = cmdHist[current];
+        if (e.key === 'Enter') {
+            send();
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            if (histIdx[current] > 0) { histIdx[current]--; input.value = h[histIdx[current]]; }
+        } else if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            if (histIdx[current] < h.length - 1) { histIdx[current]++; input.value = h[histIdx[current]]; }
+            else { histIdx[current] = h.length; input.value = ''; }
+        }
+    });
+
+    document.getElementById('termwrap').addEventListener('click', function () { input.focus(); });
+    document.querySelectorAll('.tab').forEach(function (t) {
+        t.addEventListener('click', function () { show(t.dataset.router); });
+    });
+
+    document.getElementById('check-btn').addEventListener('click', function () {
+        fetch(urls.check, {method: 'POST'})
+            .then(function (res) { return res.json(); })
+            .then(function (d) {
+                var box = document.getElementById('check-result');
+                box.innerHTML = '';
+                d.tasks.forEach(function (t) {
+                    var p = document.createElement('p');
+                    p.className = 'check-item ' + (t.ok ? 'ok' : 'bad');
+                    p.textContent = (t.ok ? '✅ ' : '❌ ') + t.label + (t.ok ? '' : ' — ' + t.why);
+                    box.appendChild(p);
+                });
+                var s = document.createElement('div');
+                s.className = 'outcome ' + (d.passed ? 'ok' : 'drop');
+                if (d.passed) {
+                    s.textContent = d.bonus
+                        ? '🎉🌟 Lab complete, and you finished the bonus too!'
+                        : '🎉 Lab complete! Try the bonus too 🌟';
+                } else {
+                    s.textContent = 'Not finished yet. Review the ❌ items and check your configuration.';
+                }
+                box.appendChild(s);
+            });
+    });
+
+    document.getElementById('reset-btn').addEventListener('click', function () {
+        fetch(urls.reset, {method: 'POST'})
+            .then(function (res) { return res.json(); })
+            .then(function (d) {
+                prompts = d.prompts;
+                routers.forEach(function (r) { term(r).innerHTML = ''; banner(r); });
+                document.getElementById('check-result').innerHTML = '';
+                show(current);
+            });
+    });
+
+    routers.forEach(banner);
+    show(current);
+})();
+</script>
+{% endblock %}

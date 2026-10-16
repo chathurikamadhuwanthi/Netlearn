@@ -1,0 +1,126 @@
+{% extends "app_base.html" if g.user else "base.html" %}
+{% set active = 'packet' %}
+{% block title %}Packet Walk – NetLearn{% endblock %}
+{% block page_title %}Packet Walk{% endblock %}
+{% block main_class %}tool-public{% endblock %}
+
+{% block content %}
+
+<section class="tool-hero">
+    <div>
+        <span class="resume-tag">Simulator · Routing</span>
+        <h2>Packet Walk Simulation</h2>
+        <p >Follow a packet hop by hop. At every router you can see the routing table, the routes that match
+           the destination, and the <strong>Longest Prefix Match</strong> that decides the next hop.
+           This is a concept simulator, not real equipment.</p>
+    </div>
+    <div class="tool-hero-ico">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="2.5"/><circle cx="12" cy="5" r="2.5"/><circle cx="19" cy="12" r="2.5"/><circle cx="12" cy="19" r="2.5"/><path d="M7 10.5 L10.2 6.8 M13.8 6.8 L17 10.5 M17 13.5 L13.8 17.2 M10.2 17.2 L7 13.5"/></svg>
+    </div>
+</section>
+
+{% include "tools/_topology.html" %}
+
+<section class="tcard">
+    <h3 class="tcard-title">Send a packet</h3>
+    <form method="get" class="au-form">
+        <div class="tool-form-grid">
+            <div>
+                <label for="start">Where does the packet enter?</label>
+                <div class="au-field">
+                    <span class="au-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><path d="M12 8 V12 L15 14"/></svg></span>
+                    <select id="start" name="start">
+                        {% for code, label in routers %}
+                            <option value="{{ code }}" {% if code == start %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div>
+                <label for="dest">Destination IP address</label>
+                <div class="au-field">
+                    <span class="au-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12 H21 M12 3 C8 8 8 16 12 21 M12 3 C16 8 16 16 12 21"/></svg></span>
+                    <input type="text" id="dest" name="dest" value="{{ dest }}" placeholder="192.168.3.10" required>
+                </div>
+            </div>
+        </div>
+        <button class="au-submit tool-submit" type="submit">Send packet </button>
+    </form>
+
+    <div class="chips">
+        <span class="muted">Examples:</span>
+        {% for ex in examples %}
+            <a class="chip" href="{{ url_for('tools.packet_walk', start=ex.start, dest=ex.dest) }}">{{ ex.label }}</a>
+        {% endfor %}
+    </div>
+</section>
+
+{% if error %}
+    <div class="tool-error">⚠️ {{ error }}</div>
+{% endif %}
+
+{% if result %}
+<section class="tcard">
+    <h3 class="tcard-title">The packet's journey</h3>
+    <p class="path">
+        {% for p in result.path %}<span class="node">{{ p }}</span>{% if not loop.last %} ➜ {% endif %}{% endfor %}
+    </p>
+    <div class="outcome {{ result.outcome.kind }}">{{ result.outcome.text }}</div>
+</section>
+
+{% for h in result.hops %}
+<section class="hop-card">
+    <div class="hop-head">
+        <span class="hop-no">{{ h.step }}</span>
+        <h3>Router {{ h.router }}</h3>
+    </div>
+    <div class="hop-body">
+        <p class="muted">Interfaces: {{ h.interfaces | join(' · ') }}</p>
+        <p>Destination IP: <strong>{{ result.dest }}</strong></p>
+
+        <div class="table-wrap">
+        <table class="result-table route-table">
+            <tr><th>Code</th><th>Network</th><th>Next hop / interface</th><th></th></tr>
+            {% for r in h.rows %}
+            <tr class="{{ 'selected' if r.selected else ('matched' if r.matched else '') }}">
+                <td>{{ r.code }}</td>
+                <td>{{ r.network }}</td>
+                <td>{{ r.target }}</td>
+                <td>{% if r.selected %}✅ Selected{% elif r.matched %}Matches{% endif %}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        </div>
+
+        {% if h.matches %}
+            <p class="muted" style="margin-top:8px;">
+                Matching routes: {{ h.matches | join(', ') }} →
+                longest prefix (LPM): <strong>{{ h.best }}</strong>
+            </p>
+        {% endif %}
+        <p class="action">{{ h.action }}</p>
+    </div>
+</section>
+{% endfor %}
+{% endif %}
+
+<section class="tcard">
+    <h3 class="tcard-title">Routing tables of all routers</h3>
+    <p class="muted">C = connected · S = static · S* = default static route</p>
+    {% for name, t in tables.items() %}
+    <details>
+        <summary>{{ name }}</summary>
+        <p class="muted">{{ t.interfaces | join(' · ') }}</p>
+        <div class="table-wrap">
+        <table class="result-table route-table">
+            <tr><th>Code</th><th>Network</th><th>Next hop / interface</th></tr>
+            {% for r in t.rows %}
+            <tr><td>{{ r.code }}</td><td>{{ r.network }}</td><td>{{ r.target }}</td></tr>
+            {% endfor %}
+        </table>
+        </div>
+    </details>
+    {% endfor %}
+    <p class="muted" style="margin-top:10px;">R1 has no default route. Try "No route (R1 → 8.8.8.8)" to see a packet being dropped.</p>
+</section>
+{% endblock %}

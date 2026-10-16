@@ -1,0 +1,62 @@
+{
+  "questions": [
+    {
+      "q": "Which device connects different networks and forwards packets using IP addresses?",
+      "options": ["Switch", "Router", "Wireless access point", "Network cable"],
+      "answer": 1,
+      "explain": "A router works at Layer 3 and uses the destination IP address to forward packets between networks."
+    },
+    {
+      "q": "Which OSI layer is responsible for logical (IP) addressing and routing?",
+      "options": ["Transport", "Data Link", "Network", "Session"],
+      "answer": 2,
+      "explain": "Layer 3, the Network layer, handles IP addressing and routing."
+    },
+    {
+      "q": "What is the PDU at the Data Link layer called?",
+      "options": ["Bits", "Frame", "Packet", "Segment"],
+      "answer": 1,
+      "explain": "Segment = Layer 4, Packet = Layer 3, Frame = Layer 2, Bits = Layer 1."
+    },
+    {
+      "q": "How long is a MAC address?",
+      "options": ["32 bits", "48 bits", "64 bits", "128 bits"],
+      "answer": 1,
+      "explain": "A MAC address is 48 bits, written as 12 hexadecimal digits."
+    },
+    {
+      "q": "Which of these is a private IPv4 address?",
+      "options": ["8.8.8.8", "172.16.5.4", "172.32.1.1", "203.0.113.5"],
+      "answer": 1,
+      "explain": "The private range is 172.16.0.0 to 172.31.255.255, so 172.32.1.1 is outside it."
+    },
+    {
+      "q": "Which port does HTTPS use by default?",
+      "options": ["80", "22", "443", "53"],
+      "answer": 2,
+      "explain": "HTTPS uses 443. HTTP uses 80, SSH uses 22 and DNS uses 53."
+    },
+    {
+      "q": "What is the correct order of PDUs when data moves down from the Application layer?",
+      "options": [
+        "Data → Frame → Packet → Segment → Bits",
+        "Data → Segment → Packet → Frame → Bits",
+        "Data → Packet → Segment → Frame → Bits",
+        "Data → Segment → Frame → Packet → Bits"
+      ],
+      "answer": 1,
+      "explain": "Transport makes a segment, Network makes a packet, Data Link makes a frame, and the Physical layer sends bits."
+    },
+    {
+      "q": "What does a default gateway do for a device?",
+      "options": [
+        "Assigns IP addresses to devices",
+        "Translates names into IP addresses",
+        "Receives traffic meant for other networks and forwards it",
+        "Connects Wi-Fi devices to the cable network"
+      ],
+      "answer": 2,
+      "explain": "Traffic for any network other than the local one is sent to the default gateway, which is a router."
+    }
+  ]
+}

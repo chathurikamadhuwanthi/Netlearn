@@ -1,0 +1,72 @@
+{
+  "questions": [
+    {
+      "q": "What does a router use to decide where to forward a packet?",
+      "options": [
+        "The source MAC address",
+        "The destination IP address and its routing table",
+        "The switch's MAC address table",
+        "The port number only"
+      ],
+      "answer": 1,
+      "explain": "A router works at Layer 3. It matches the destination IP address against its routing table to choose the next hop."
+    },
+    {
+      "q": "What does the code S* mean in show ip route?",
+      "options": ["A directly connected network", "An OSPF route", "A default static route", "A RIP route"],
+      "answer": 2,
+      "explain": "S means static and * marks a candidate default route, which is the 0.0.0.0/0 route."
+    },
+    {
+      "q": "The destination is 10.1.2.50. The matching routes are 10.0.0.0/8, 10.1.0.0/16, 10.1.2.0/24 and 0.0.0.0/0. Which route is used?",
+      "options": ["10.0.0.0/8", "10.1.0.0/16", "10.1.2.0/24", "0.0.0.0/0"],
+      "answer": 2,
+      "explain": "Longest Prefix Match: among the matching routes, the one with the longest prefix (/24) wins."
+    },
+    {
+      "q": "Which network and prefix make up the default route?",
+      "options": ["255.255.255.255/32", "0.0.0.0/0", "127.0.0.0/8", "192.168.0.0/16"],
+      "answer": 1,
+      "explain": "0.0.0.0/0 matches any destination and is used only when no other route matches."
+    },
+    {
+      "q": "Which command adds a static route to 192.168.3.0/24 through the next hop 10.0.12.2?",
+      "options": [
+        "ip route 192.168.3.0 255.255.255.0 10.0.12.2",
+        "route add 192.168.3.0/24 10.0.12.2",
+        "ip static 192.168.3.0 10.0.12.2",
+        "network 192.168.3.0 255.255.255.0"
+      ],
+      "answer": 0,
+      "explain": "The syntax is: ip route <network> <mask> <next-hop>."
+    },
+    {
+      "q": "As a packet moves from router to router (without NAT), what changes?",
+      "options": [
+        "The source and destination IP addresses",
+        "Only the destination IP address",
+        "The MAC addresses in the frame",
+        "Only the port numbers"
+      ],
+      "answer": 2,
+      "explain": "Every hop builds a new frame with new MAC addresses. The IP addresses stay the same."
+    },
+    {
+      "q": "What is the default administrative distance of a static route?",
+      "options": ["0", "1", "90", "110"],
+      "answer": 1,
+      "explain": "Connected = 0, static = 1, OSPF = 110, RIP = 120."
+    },
+    {
+      "q": "A ping request reaches PC-C, but no reply comes back. What is the most likely cause?",
+      "options": [
+        "A missing return route toward PC-A's network",
+        "The subnet mask is 255.255.255.0",
+        "The type of cable being used",
+        "The IP address is in a private range"
+      ],
+      "answer": 0,
+      "explain": "Routes are needed in both directions. The reply cannot return if a router on the way has no route to PC-A's network."
+    }
+  ]
+}

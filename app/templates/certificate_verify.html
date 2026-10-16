@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Verify Certificate – NetLearn{% endblock %}
+
+{% block content %}
+<section class="card form-card wide">
+    <h2>🔍 Certificate verification</h2>
+    {% if row %}
+        <div class="outcome ok">✅ This certificate is valid.</div>
+        <table class="result-table" style="margin-top:12px;">
+            <tr><th>Name</th><td>{{ row['name'] }}</td></tr>
+            <tr><th>Certificate ID</th><td>{{ row['code'] }}</td></tr>
+            <tr><th>Issued</th><td>{{ row['issued_at'][:10] }}</td></tr>
+            <tr><th>Modules</th><td>{{ modules | join(', ') }}</td></tr>
+        </table>
+        <p class="muted" style="margin-top:10px;">
+            This is a course-completion certificate issued by the NetLearn platform.
+            It is not an accredited qualification.
+        </p>
+    {% else %}
+        <div class="outcome drop">❌ No certificate was found for this ID.</div>
+    {% endif %}
+</section>
+{% endblock %}

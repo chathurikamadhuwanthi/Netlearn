@@ -1,0 +1,72 @@
+{
+  "questions": [
+    {
+      "q": "What is the main advantage of dynamic routing over static routing?",
+      "options": [
+        "It uses no CPU or bandwidth",
+        "Routers learn routes and adapt automatically when the network changes",
+        "It never needs any configuration",
+        "It is always more secure"
+      ],
+      "answer": 1,
+      "explain": "Routing protocols let routers share information and update their tables when links fail or networks are added."
+    },
+    {
+      "q": "What metric does RIP use?",
+      "options": ["Bandwidth", "Delay", "Hop count", "Cost based on link speed"],
+      "answer": 2,
+      "explain": "RIP counts the number of routers (hops) on the path."
+    },
+    {
+      "q": "What is the maximum usable hop count in RIP?",
+      "options": ["10", "15", "16", "255"],
+      "answer": 1,
+      "explain": "A route with 16 hops is treated as unreachable, so 15 is the maximum usable hop count."
+    },
+    {
+      "q": "Which type of routing protocol is OSPF?",
+      "options": ["Distance-vector", "Link-state", "Static", "Exterior gateway"],
+      "answer": 1,
+      "explain": "OSPF is a link-state protocol. Each router builds a map of the area and runs the SPF algorithm."
+    },
+    {
+      "q": "What do all OSPF routers in an area share?",
+      "options": [
+        "The same routing table",
+        "The same router ID",
+        "An identical link-state database (LSDB)",
+        "The same hop counts"
+      ],
+      "answer": 2,
+      "explain": "Routers exchange LSAs until every router in the area has the same LSDB, and then each one calculates its own routes."
+    },
+    {
+      "q": "What is OSPF's metric based on?",
+      "options": ["Hop count", "Interface bandwidth (cost)", "Number of neighbours", "Packet size"],
+      "answer": 1,
+      "explain": "OSPF cost is calculated from the reference bandwidth divided by the interface bandwidth."
+    },
+    {
+      "q": "A router learns the same network from both RIP (AD 120) and OSPF (AD 110). Which route is installed?",
+      "options": [
+        "The RIP route",
+        "The OSPF route",
+        "Both routes, one after the other",
+        "Neither, because the metrics differ"
+      ],
+      "answer": 1,
+      "explain": "The route from the source with the lower administrative distance wins, so OSPF (110) beats RIP (120)."
+    },
+    {
+      "q": "What is the purpose of OSPF Hello packets?",
+      "options": [
+        "To carry user data",
+        "To discover neighbours and keep adjacencies alive",
+        "To assign IP addresses",
+        "To translate private addresses"
+      ],
+      "answer": 1,
+      "explain": "Hello packets are sent regularly to find neighbours and confirm that they are still there."
+    }
+  ]
+}

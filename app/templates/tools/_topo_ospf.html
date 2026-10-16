@@ -1,0 +1,26 @@
+<div class="topo-card">
+    <svg viewBox="0 0 760 260" xmlns="http://www.w3.org/2000/svg" role="img"
+         aria-label="Lab 3 network: three routers connected in a triangle, each with a LAN">
+        <g class="tlink" fill="none" stroke-width="2.5">
+            <path d="M110 53 V94"/><path d="M380 53 V94"/><path d="M650 53 V94"/>
+            <path d="M136 120 H354"/><path d="M406 120 H624"/>
+            <path d="M110 146 V225 H650 V146"/>
+        </g>
+        <g class="tlabel">
+            <text x="122" y="80">192.168.1.0/24</text>
+            <text x="392" y="80">192.168.2.0/24</text>
+            <text x="662" y="80">192.168.3.0/24</text>
+            <text x="245" y="110" text-anchor="middle">10.0.12.0/30 · Fa · cost 1</text>
+            <text x="515" y="110" text-anchor="middle">10.0.23.0/30 · Fa · cost 1</text>
+            <text x="380" y="215" text-anchor="middle">10.0.13.0/30 · Serial · cost 64</text>
+        </g>
+
+        <g class="tnode" transform="translate(110 35)"><rect x="-34" y="-18" width="68" height="36" rx="8"/><text y="5">PC-A</text></g>
+        <g class="tnode" transform="translate(380 35)"><rect x="-34" y="-18" width="68" height="36" rx="8"/><text y="5">PC-B</text></g>
+        <g class="tnode" transform="translate(650 35)"><rect x="-34" y="-18" width="68" height="36" rx="8"/><text y="5">PC-C</text></g>
+
+        <g class="tnode" transform="translate(110 120)"><circle r="26"/><text y="5">R1</text></g>
+        <g class="tnode" transform="translate(380 120)"><circle r="26"/><text y="5">R2</text></g>
+        <g class="tnode" transform="translate(650 120)"><circle r="26"/><text y="5">R3</text></g>
+    </svg>
+</div>

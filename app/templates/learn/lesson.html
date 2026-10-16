@@ -1,0 +1,110 @@
+{% extends "app_base.html" %}
+{% set active = 'course' %}
+{% block title %}{{ lesson.title }} – NetLearn{% endblock %}
+{% block page_title %}Lesson{% endblock %}
+
+{% block content %}
+
+<p class="ls-crumbs">
+    <a href="{{ url_for('main.course') }}">Course</a> ›
+    <a href="{{ url_for('learn.module', module_id=module.id) }}">Module {{ module.number }}</a> ›
+    Lesson {{ number }} of {{ total }}
+</p>
+
+<div class="ls-layout" id="ls-layout">
+    <script>
+    /* Restore the focus-mode choice before the page paints */
+    (function () {
+        try {
+            if (localStorage.getItem('nl-focus') === '1') {
+                document.getElementById('ls-layout').classList.add('focus');
+            }
+        } catch (e) {}
+    })();
+    </script>
+
+    <article class="doc-panel">
+        <div class="doc-meta">
+            <span>Module {{ module.number }} · {{ module.title }}</span>
+            <span>Lesson {{ number }} of {{ total }}</span>
+            <span>{{ minutes }} min read</span>
+
+            <button type="button" class="ls-expand" id="ls-expand" aria-pressed="false" title="Hide the lesson list for a wider view">
+                <svg class="ico-expand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+                <svg class="ico-compress" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="14" y1="10" x2="21" y2="3"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+            </button>
+        </div>
+
+        <div class="doc">{{ content | safe }}</div>
+
+        <div class="ls-actions">
+            {% if prev_lesson %}
+                <a class="app-btn outline-dark small" href="{{ url_for('learn.lesson', module_id=module.id, lesson_id=prev_lesson.id) }}">← Previous lesson</a>
+            {% else %}
+                <a class="app-btn outline-dark small" href="{{ url_for('learn.module', module_id=module.id) }}">← Module overview</a>
+            {% endif %}
+
+            <form method="post" action="{{ url_for('learn.complete', module_id=module.id, lesson_id=lesson.id) }}">
+                <button class="app-btn dark" type="submit">
+                    {% if number == total %}
+                        {{ 'Continue to the quiz' if lesson.done else 'Complete and take the quiz' }}
+                    {% else %}
+                        {{ 'Next lesson' if lesson.done else 'Complete and continue' }}
+                    {% endif %} →
+                </button>
+            </form>
+        </div>
+    </article>
+
+    <aside class="ls-side">
+        <div class="ls-side-card">
+            <span class="db-label">Module {{ module.number }}</span>
+            <h4>{{ module.title }}</h4>
+            <progress class="app-prog thin" value="{{ module.pct }}" max="100"></progress>
+
+            <ul class="cr-lessons ls-outline">
+                {% for l in module.lessons %}
+                <li class="{{ 'done' if l.done else ('open' if l.unlocked else 'locked') }}{{ ' current' if l.id == lesson.id }}">
+                    <span class="cr-mark">{% if l.done %}✓{% else %}{{ loop.index }}{% endif %}</span>
+                    {% if l.unlocked %}
+                        <a href="{{ url_for('learn.lesson', module_id=module.id, lesson_id=l.id) }}">{{ l.title }}</a>
+                    {% else %}
+                        <span>{{ l.title }}</span>
+                    {% endif %}
+                </li>
+                {% endfor %}
+                <li class="{{ 'done' if module.passed else ('open' if module.quiz_unlocked else 'locked') }}">
+                    <span class="cr-mark">{% if module.passed %}✓{% else %}Q{% endif %}</span>
+                    {% if module.quiz_unlocked %}
+                        <a href="{{ url_for('learn.quiz', module_id=module.id) }}">Module quiz</a>
+                    {% else %}
+                        <span>Module quiz</span>
+                    {% endif %}
+                </li>
+            </ul>
+        </div>
+    </aside>
+</div>
+
+<script>
+(function () {
+    var layout = document.getElementById('ls-layout');
+    var btn = document.getElementById('ls-expand');
+    if (!layout || !btn) { return; }
+
+    function apply(on) {
+        layout.classList.toggle('focus', on);
+        btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+        btn.title = on ? 'Show the lesson list' : 'Hide the lesson list for a wider view';
+    }
+
+    apply(layout.classList.contains('focus'));
+
+    btn.addEventListener('click', function () {
+        var on = !layout.classList.contains('focus');
+        apply(on);
+        try { localStorage.setItem('nl-focus', on ? '1' : '0'); } catch (e) {}
+    });
+})();
+</script>
+{% endblock %}

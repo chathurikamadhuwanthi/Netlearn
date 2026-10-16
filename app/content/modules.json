@@ -1,0 +1,122 @@
+[
+  {
+    "id": "m01",
+    "title": "Networking Basics (OSI, TCP/IP)",
+    "level": "Beginner",
+    "folder": "module01_networking_basics",
+    "quiz": "quiz.json",
+    "desc": "OSI & TCP/IP models, network devices, IP vs MAC addresses and ports.",
+    "objectives": [
+      "Explain what a network is and name the main network devices",
+      "Describe the seven OSI layers and the four TCP/IP layers",
+      "Explain encapsulation and the PDU name used at each layer",
+      "Tell MAC addresses, IP addresses and port numbers apart",
+      "Recognise private and public IPv4 addresses"
+    ],
+    "lessons": [
+      {"id": "m01-l01", "title": "What is a network?", "file": "lesson01.md"},
+      {"id": "m01-l02", "title": "The OSI and TCP/IP models", "file": "lesson02.md"},
+      {"id": "m01-l03", "title": "IP addresses, MAC addresses and ports", "file": "lesson03.md"}
+    ]
+  },
+  {
+    "id": "m02",
+    "title": "IP Addressing & Subnetting",
+    "level": "Beginner",
+    "folder": "module02_ip_subnetting",
+    "quiz": "quiz.json",
+    "desc": "Binary, CIDR, subnet masks and step-by-step subnetting.",
+    "objectives": [
+      "Convert between binary and decimal",
+      "Read and write subnet masks and CIDR prefixes",
+      "Calculate the network address, broadcast address and usable host range",
+      "Divide a network into equal subnets",
+      "Check your answers with the Subnet Calculator"
+    ],
+    "lessons": [
+      {"id": "m02-l01", "title": "IPv4 addresses and binary", "file": "lesson01.md"},
+      {"id": "m02-l02", "title": "Subnet masks and CIDR", "file": "lesson02.md"},
+      {"id": "m02-l03", "title": "Subnetting step by step", "file": "lesson03.md"}
+    ]
+  },
+  {
+    "id": "m03",
+    "title": "Basic Routing & Static Routes",
+    "level": "Beginner",
+    "folder": "module03_basic_routing",
+    "quiz": "quiz.json",
+    "desc": "Routing tables, static and default routes, Longest Prefix Match.",
+    "objectives": [
+      "Read a routing table and understand its route codes",
+      "Configure static and default routes on a Cisco router",
+      "Explain why a return route is always needed",
+      "Apply the Longest Prefix Match rule",
+      "Practise in the Packet Walk and Router Lab tools"
+    ],
+    "lessons": [
+      {"id": "m03-l01", "title": "Routing and the routing table", "file": "lesson01.md"},
+      {"id": "m03-l02", "title": "Static routes and the default route", "file": "lesson02.md"},
+      {"id": "m03-l03", "title": "Longest Prefix Match (LPM)", "file": "lesson03.md"}
+    ]
+  },
+  {
+    "id": "m04",
+    "title": "Switching, VLANs & Trunking",
+    "level": "Intermediate",
+    "folder": "module04_switching_vlans",
+    "quiz": "quiz.json",
+    "desc": "How switches forward frames, VLAN segmentation and 802.1Q trunks.",
+    "objectives": [
+      "Explain how a switch learns MAC addresses and forwards frames",
+      "Describe what a VLAN is and why networks use them",
+      "Configure access ports and trunk ports",
+      "Understand 802.1Q tagging and inter-VLAN routing",
+      "Recognise common VLAN problems"
+    ],
+    "lessons": [
+      {"id": "m04-l01", "title": "How switches work", "file": "lesson01.md"},
+      {"id": "m04-l02", "title": "VLANs explained", "file": "lesson02.md"},
+      {"id": "m04-l03", "title": "Trunks and inter-VLAN routing", "file": "lesson03.md"}
+    ]
+  },
+  {
+    "id": "m05",
+    "title": "Dynamic Routing (RIP, OSPF)",
+    "level": "Intermediate",
+    "folder": "module05_dynamic_routing",
+    "quiz": "quiz.json",
+    "desc": "How routers learn routes automatically and choose the best path.",
+    "objectives": [
+      "Explain the difference between static and dynamic routing",
+      "Describe how RIP works and where it falls short",
+      "Describe how OSPF builds a map of the network",
+      "Compare metrics and administrative distance",
+      "Read basic routing protocol output"
+    ],
+    "lessons": [
+      {"id": "m05-l01", "title": "Static vs dynamic routing", "file": "lesson01.md"},
+      {"id": "m05-l02", "title": "RIP", "file": "lesson02.md"},
+      {"id": "m05-l03", "title": "OSPF", "file": "lesson03.md"}
+    ]
+  },
+  {
+    "id": "m06",
+    "title": "Network Services (DHCP, DNS, NAT)",
+    "level": "Intermediate",
+    "folder": "module06_network_services",
+    "quiz": "quiz.json",
+    "desc": "The services that make real networks and the Internet usable.",
+    "objectives": [
+      "Explain how DHCP gives a device an address",
+      "Describe how DNS turns names into IP addresses",
+      "Explain how NAT and PAT share public addresses",
+      "Troubleshoot basic service problems",
+      "Understand where these services fit in a network"
+    ],
+    "lessons": [
+      {"id": "m06-l01", "title": "DHCP", "file": "lesson01.md"},
+      {"id": "m06-l02", "title": "DNS", "file": "lesson02.md"},
+      {"id": "m06-l03", "title": "NAT and PAT", "file": "lesson03.md"}
+    ]
+  }
+]

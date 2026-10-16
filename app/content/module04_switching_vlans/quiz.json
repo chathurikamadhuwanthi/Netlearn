@@ -1,0 +1,87 @@
+{
+  "questions": [
+    {
+      "q": "How does a switch learn which port a device is connected to?",
+      "options": [
+        "By reading the source MAC address of incoming frames",
+        "By reading the destination IP address of packets",
+        "By asking the router",
+        "By reading the port number in the TCP header"
+      ],
+      "answer": 0,
+      "explain": "A switch records the source MAC address of every frame together with the port it arrived on."
+    },
+    {
+      "q": "What does a switch do with a frame whose destination MAC address is not in its MAC address table?",
+      "options": [
+        "Drops the frame",
+        "Sends it back to the sender",
+        "Floods it out of every port except the one it arrived on",
+        "Sends it to the router only"
+      ],
+      "answer": 2,
+      "explain": "Unknown unicast frames are flooded. When the destination replies, the switch learns its port."
+    },
+    {
+      "q": "What is a VLAN?",
+      "options": [
+        "A faster type of Ethernet cable",
+        "A logical grouping of devices into a separate broadcast domain on the same physical switch",
+        "A type of wireless network",
+        "A protocol that prevents loops"
+      ],
+      "answer": 1,
+      "explain": "VLANs split one physical switch into several logical networks, each with its own broadcast domain."
+    },
+    {
+      "q": "Which command places an access port into VLAN 10?",
+      "options": [
+        "switchport mode trunk",
+        "vlan 10 access",
+        "switchport access vlan 10",
+        "ip vlan 10"
+      ],
+      "answer": 2,
+      "explain": "Use switchport mode access and then switchport access vlan 10 in interface configuration mode."
+    },
+    {
+      "q": "What is needed for devices in different VLANs to communicate?",
+      "options": [
+        "A longer cable",
+        "A hub",
+        "A router or a Layer 3 switch",
+        "Nothing, VLANs communicate automatically"
+      ],
+      "answer": 2,
+      "explain": "Different VLANs are different networks, so traffic between them must be routed."
+    },
+    {
+      "q": "What does a trunk port carry?",
+      "options": [
+        "Traffic for one VLAN only",
+        "Traffic for several VLANs, identified by 802.1Q tags",
+        "Only management traffic",
+        "Only untagged broadcast traffic"
+      ],
+      "answer": 1,
+      "explain": "A trunk carries many VLANs over one link, and 802.1Q tags show which VLAN each frame belongs to."
+    },
+    {
+      "q": "How many bits does the VLAN ID in an 802.1Q tag have?",
+      "options": ["8 bits", "12 bits", "16 bits", "24 bits"],
+      "answer": 1,
+      "explain": "12 bits allow VLAN IDs from 0 to 4095, and VLANs 1 to 4094 are usable."
+    },
+    {
+      "q": "How does router-on-a-stick work?",
+      "options": [
+        "It uses one router interface per VLAN",
+        "It uses one physical interface divided into subinterfaces, one per VLAN",
+        "It removes VLANs from the switch",
+        "It uses a hub between the VLANs"
+      ],
+      "answer": 1,
+      "explain": "A single trunk link to the router is divided into subinterfaces, and each one is the gateway of one VLAN."
+    }
+  ]
+}
